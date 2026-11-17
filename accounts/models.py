@@ -2,61 +2,67 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
-
+from accounts.models import User
+from django.db.models.signals import post_save
 
 class User(AbstractUser):
 
+    phone = models.CharField(max_length=15,unique=True)
+
     ROLE_CHOICES=(
-        ('ADMIN','Admin'),
-        ('TRAINER','Trainer'),
-        ('STUDENT'),('Student'),
+        ('admin','admin'),
+        ('trainer','trainer'),
+        ('student'),('student'),
     )
 
-    name=models.CharField(max_length=150)
-
-    email=models.EmailField(unique=True)
-
-    phone=models.CharField(max_length=15,unique=True)
-
-    role=models.CharField(max_length=10,choices=ROLE_CHOICES,default='STUDENT')
-
-    created_at=models.DateTimeField(auto_now_add=True)
-
-    updated_at=models.DateTimeField(auto_now=True)
+    role=models.CharField(max_length=200,choices=ROLE_CHOICES,default='student')
 
     
-    
+class TrainerProfile(models.Model):
+
+    trainer = models.OneToOneField(User,on_delete=models.CASCADE,related_name="trainer_profile")
+
+    profile_picture = models.ImageField(upload_to="cover_pics",null=True,blank=True)
+
+    qualification = models.CharField(max_length=200)
+
+    specialization = models.CharField(max_length=200)
+
+    experience = models.PositiveIntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_data = models.DateTimeField(auto_now=True)
+
+
 class StudentProfile(models.Model):
 
-    skills = models.CharField(max_length=200,null=True)
+    student = models.OneToOneField(User,on_delete=models.CASCADE,related_name="student_profile")
 
-    qualification = models.CharField(max_length=200,null=True)
+    profile_picture = models.ImageField(upload_to="cover_pics",null=True,blank=True)
 
-    passoutyear = models.CharField(max_length=20,null=True)
+    skill = models.CharField(max_length=200)
 
-    student=models.OneToOneField(User,on_delete=models.CASCADE,related_name="student")
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Trainer(models.Model):
-
-    name=models.CharField(max_length=100)
-
-    qualification = models.CharField(
-        max_length=150,
-        blank=True,
-        null=True
-    )
-
-    experience = models.PositiveIntegerField(default=0)
+    qualification = models.CharField(max_length=200)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
 
 
-    def __str__(self):
-            return self.email
+def create_trainer_profile(sender,instance,create,*args,**kwargs):
+
+    if create and instance.role =="trainer":
+
+        TrainerProfile.objects.create(trainer=instance)
+
+post_save.connect(create_trainer_profile,sender=User)
+
+
+def create_student_profile(sender,instance,create,*args,**kwargs):
+
+    if create and instance.role == "student":
+
+        StudentProfile.objects.create(student=instance)
+
+post_save.connect(create_student_profile,sender=User)

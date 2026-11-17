@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User,StudentProfile
+from accounts.models import User,StudentProfile,TrainerProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +17,13 @@ class StudentprofileSerializer(serializers.ModelSerializer):
         fields="__all__"
 
         read_only_fields=["id","student"]
+
+class TrainerprofileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model=TrainerProfile
+
+        fields="__all__"
+
+        read_only_fields=["id","trainer"]
