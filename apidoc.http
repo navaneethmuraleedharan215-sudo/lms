@@ -1,0 +1,52 @@
+#for trainer register
+###
+POST http://127.0.0.1:8000/accounts/trainer/register/
+Content-Type: application/json
+
+{
+    "username":"navaneeth",
+    "email":"nvt@gmail.com",
+    "password":"nvt@123",
+    "phone":"7907539339"
+}
+
+#student register
+###
+POST http://127.0.0.1:8000/accounts/student/register/
+Content-Type: application/json
+
+{
+    "username":"nithya",
+    "email":"nithya@gmail.com",
+    "password":"nithu@123",
+    "phone":"5468309728"
+
+}
+
+#api call for trainer token
+###
+POST http://127.0.0.1:8000/accounts/trainer/token/
+Content-Type: application/json
+
+{
+    "username":"navaneeth",
+    "password":"nvt@123"
+}
+
+#trainer details
+###
+GET http://127.0.0.1:8000/accounts/profile/me/
+Accept: application/json
+Authorization: Token 58f8eb932124192d119fc4cea33638fada347fb8
+
+#trainer updated
+###
+PUT http://127.0.0.1:8000/accounts/profile/complete/
+Content-Type: application/json
+Authorization: Token 58f8eb932124192d119fc4cea33638fada347fb8
+
+{
+    "qualification":"Bcom",
+    "specification":"data science",
+    "experience":2
+}

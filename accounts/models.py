@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
-from accounts.models import User
+# from accounts.models import User
 from django.db.models.signals import post_save
 
 class User(AbstractUser):
@@ -12,7 +12,7 @@ class User(AbstractUser):
     ROLE_CHOICES=(
         ('admin','admin'),
         ('trainer','trainer'),
-        ('student'),('student'),
+        ('student','student'),
     )
 
     role=models.CharField(max_length=200,choices=ROLE_CHOICES,default='student')
@@ -32,7 +32,7 @@ class TrainerProfile(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    updated_data = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class StudentProfile(models.Model):
@@ -52,7 +52,7 @@ class StudentProfile(models.Model):
 
 def create_trainer_profile(sender,instance,create,*args,**kwargs):
 
-    if create and instance.role =="trainer":
+    if created and instance.role =="trainer":
 
         TrainerProfile.objects.create(trainer=instance)
 
@@ -61,7 +61,7 @@ post_save.connect(create_trainer_profile,sender=User)
 
 def create_student_profile(sender,instance,create,*args,**kwargs):
 
-    if create and instance.role == "student":
+    if created and instance.role == "student":
 
         StudentProfile.objects.create(student=instance)
 

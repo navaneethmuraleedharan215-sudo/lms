@@ -26,4 +26,4 @@ class TrainerprofileSerializer(serializers.ModelSerializer):
 
         fields="__all__"
 
-        read_only_fields=["id","trainer"]
+        read_only_fields=["id","trainer","updated_at","created_at"]
